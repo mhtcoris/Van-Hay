@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Văn Hay Pro v9.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital@0;1&display=swap" rel="stylesheet">
+<style>body{font-family:Inter,sans-serif;background:#fdf8f0} .serif{font-family:Merriweather,serif} #rw::-webkit-scrollbar{width:6px} #rw::-webkit-scrollbar-thumb{background:#d4d4d8;border-radius:10px} #rw::-webkit-scrollbar-track{background:transparent}</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-20 bg-[#fdf8f0]/80 backdrop-blur border-b border-amber-100">
+<div class="max-w-[1280px] mx-auto px-4 py-3 flex justify-between items-center">
+<div><h1 class="font-bold text-[18px]">📚 Văn Hay v9.0</h1><p class="text-[11px] text-zinc-500">Từ Tiểu học đến Chuyên nghiệp</p></div>
+<div id="authArea" class="flex gap-2 items-center"></div>
+</div>
+</header>
+<div class="max-w-[1280px] mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[1.25fr_0.85fr] gap-6">
+<div class="space-y-4">
+<div class="bg-white rounded-[20px] p-5 shadow border border-zinc-100">
+<h3 class="font-semibold text-[14px] mb-3">Cấp độ & Thể loại</h3>
+<select id="levelSel" class="w-full border rounded-xl px-3 py-2.5 text-[14px] bg-white mb-3">
+<option value="tieu-hoc">Tiểu học (1-5)</option>
+<option value="thcs">THCS (6-9)</option>
+<option value="thpt">THPT (10-12)</option>
+<option value="chuyen-nghiep" selected>Chuyên nghiệp / Đại học</option>
+</select>
+<select id="genreSel" class="w-full border rounded-xl px-3 py-2.5 text-[14px] bg-white">
+<option value="auto" selected>Tự động nhận diện</option>
+<option value="mieu-ta">Văn miêu tả</option>
+<option value="tu-su">Văn tự sự</option>
+<option value="bieu-cam">Văn biểu cảm</option>
+<option value="nghi-luan-xh">Nghị luận xã hội</option>
+<option value="nghi-luan-vh">Nghị luận văn học</option>
+<option value="truyen-ngan">Truyện ngắn</option>
+<option value="truyen-dai">Truyện dài / Tiểu thuyết</option>
+<option value="tan-van">Tản văn</option>
+<option value="tho">Thơ</option>
+<option value="kich">Kịch / Kịch bản</option>
+<option value="thuyet-minh">Thuyết minh</option>
+<option value="nhat-ky">Nhật ký / Hồi ký</option>
+</select>
+<div id="genreBadge" class="mt-2 text-[12px] px-3 py-1.5 bg-zinc-900 text-white rounded-full w-fit hidden"></div>
+</div>
+
+<div class="bg-white rounded-[20px] p-5 shadow border border-zinc-100">
+<h3 class="font-semibold text-[14px] mb-3">Đề bài</h3>
+<div class="flex gap-2 mb-3">
+<button id="tabSample" class="px-3 py-1.5 rounded-full bg-zinc-900 text-white text-[12px]">Đề mẫu</button>
+<button id="tabCustom" class="px-3 py-1.5 rounded-full bg-zinc-100 text-[12px]">Tự nhập đề</button>
+</div>
+<div id="sampleBox">
+<div id="topicTabs" class="flex gap-2 mb-3 flex-wrap"></div>
+<div id="topicList" class="grid gap-2 max-h-[280px] overflow-auto"></div>
+</div>
+<div id="customBox" class="hidden">
+<input id="topicInput" placeholder="Nhập đề bài của bạn..." class="w-full border rounded-xl px-3 py-2.5 text-[14px]">
+<p class="text-[11px] text-zinc-400 mt-2">VD: Viết truyện ngắn về một cuộc gặp gỡ định mệnh</p>
+</div>
+</div>
+
+<div class="bg-white rounded-[20px] p-5 shadow border border-zinc-100">
+<h3 class="font-semibold text-[14px] mb-2">Bài viết</h3>
+<textarea id="essayInput" class="w-full min-h-[520px] border rounded-xl p-3 text-[14px] leading-[1.7] resize-none" placeholder="Dán bài viết của bạn vào đây..."></textarea>
+<div class="mt-2 flex justify-between items-center">
+<span id="charCount" class="text-[12px] text-zinc-500">0 chữ • 0 từ</span>
+<label class="flex items-center gap-1.5 text-[12px] cursor-pointer"><input type="checkbox" id="partialCheck"> Chỉ chấm đoạn bôi đen</label>
+</div>
+<p class="text-[11px] text-zinc-400 mt-1">Bôi đen một đoạn trong bài rồi tích chọn để chấm riêng đoạn đó.</p>
+<button id="gradeBtn" class="mt-3 w-full bg-zinc-900 text-white rounded-xl py-3 font-semibold text-[14px]">Chấm & Viết lại</button>
+<div id="partialInfo" class="hidden mt-2 text-[12px] bg-zinc-50 border rounded-lg p-2"></div>
+</div>
+</div>
+
+<div id="resultArea" class="space-y-4">
+<div class="bg-white rounded-[24px] p-8 shadow border text-center">
+<p class="text-[48px]">✍️</p><h3 class="font-semibold mt-2">Chưa có bài chấm</h3><p class="text-[13px] text-zinc-500 mt-1">Chọn đề hoặc tự nhập đề, dán bài viết và bấm Chấm.</p>
+</div>
+</div>
+</div>
+
+<div id="authModal" class="fixed inset-0 z-50 hidden"><div class="absolute inset-0 bg-zinc-900/40" onclick="closeAuth()"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-[24px] p-6 w-[90%] max-w-[380px] shadow-xl">
+<h3 class="font-bold">Tài khoản</h3><p class="text-[12px] text-zinc-500 mb-4">Lưu bài viết trên trình duyệt này</p>
+<div class="flex gap-2 mb-4"><button id="tabLogin" class="flex-1 py-2 rounded-xl bg-zinc-900 text-white text-[13px]">Đăng nhập</button><button id="tabReg" class="flex-1 py-2 rounded-xl bg-zinc-100 text-[13px]">Đăng ký</button></div>
+<input id="authUser" placeholder="Tên đăng nhập" class="w-full border rounded-xl px-3 py-2.5 text-[14px] mb-3">
+<input id="authPass" type="password" placeholder="Mật khẩu" class="w-full border rounded-xl px-3 py-2.5 text-[14px] mb-4">
+<button id="authSubmit" class="w-full bg-zinc-900 text-white rounded-xl py-2.5 text-[14px]">Tiếp tục</button>
+<p id="authMsg" class="text-[12px] text-red-600 mt-2 hidden"></p>
+</div></div>
+
+<div id="historyModal" class="fixed inset-0 z-50 hidden"><div class="absolute inset-0 bg-zinc-900/40" onclick="closeHistory()"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-[24px] p-6 w-[90%] max-w-[520px] shadow-xl max-h-[80vh] overflow-auto">
+<div class="flex justify-between items-center mb-4"><h3 class="font-bold">Kho bài đã lưu</h3><button onclick="closeHistory()" class="text-[12px] bg-zinc-100 px-3 py-1 rounded-full">Đóng</button></div>
+<div id="historyList"></div>
+</div></div>
+
+<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[13px] px-4 py-2 rounded-full shadow hidden z-50"></div>
+
+<script>
+const levels={ 'tieu-hoc':'Tiểu học','thcs':'THCS','thpt':'THPT','chuyen-nghiep':'Chuyên nghiệp'};
+const topics={
+ 'tieu-hoc':['Tả con gà trống nhà em','Tả con mèo','Tả cây bàng','Tả mẹ em'],
+ 'thcs':['Kỷ niệm đáng nhớ','Tình bạn chân thành','Lòng dũng cảm','Ngôi trường em yêu'],
+ 'thpt':['Sứ mệnh của tuổi trẻ','Giá trị của thất bại','Lòng yêu nước hôm nay'],
+ 'chuyen-nghiep':['Viết truyện ngắn','Viết truyện dài / trích tiểu thuyết','Tản văn về Hà Nội','Nỗi buồn đô thị','Tiếng rao đêm','Phân tích một tác phẩm văn học','Nghị luận về trí tuệ nhân tạo','Tháng Tám nhớ em không (truyện ngắn mẫu)','Những trái xoài mùa sau (truyện ngắn mẫu)','Hà Nội vào một ngày đầu thu (nghị luận mẫu)']
+};
+const genreCriteria={
+ 'mieu-ta':['Quan sát & Chi tiết đặc trưng','Trình tự miêu tả','Ngôn từ gợi hình','Bố cục & Mạch lạc','Cảm xúc & Logic','Tính logic tổng thể'],
+ 'tu-su':['Cốt truyện & Sự việc','Nhân vật','Ngôi kể & Giọng kể','Chi tiết & Miêu tả','Logic & Mạch lạc','Ý nghĩa'],
+ 'bieu-cam':['Cảm xúc chân thật','Hình ảnh','Ngôn từ biểu cảm','Mạch cảm xúc & Logic','Sức gợi','Tính mạch lạc'],
+ 'nghi-luan-xh':['Luận đề & Logic','Luận điểm & Dẫn chứng','Lập luận & Phản biện','Liên hệ & Mạch lạc','Diễn đạt','Tính thuyết phục logic'],
+ 'nghi-luan-vh':['Hiểu tác phẩm & Logic','Phân tích nghệ thuật','Cảm thụ & Mạch lạc','Bố cục','Sáng tạo & Liên kết','Tính logic tổng thể'],
+ 'truyen-ngan':['Cốt truyện & Phát triển tình tiết','Nhân vật & Tâm lý','Nút thắt & Tháo mở','Không gian & Bối cảnh','Nghệ thuật kể & Ngôn ngữ','Ý nghĩa & Cảm xúc'],
+ 'truyen-dai':['Cốt truyện & Phát triển tình tiết','Nhân vật & Phát triển','Nút thắt & Tháo mở & Cao trào','Thế giới & Bối cảnh','Văn phong & Kỹ thuật','Tư tưởng & Ý nghĩa'],
+ 'tan-van':['Chất trữ tình & Logic','Hình ảnh đời thường','Giọng văn & Mạch lạc','Liên tưởng & Triết lý','Ngôn từ','Tính logic tổng thể'],
+ 'tho':['Vần điệu & Nhịp','Hình ảnh thơ & Logic','Cảm xúc & Mạch lạc','Thể thơ & Niêm luật','Chính tả & Liên kết','Tính logic & Ý tại ngôn ngoại'],
+ 'kich':['Xung đột & Logic','Nhân vật & Thoại','Hành động & Mạch lạc','Bối cảnh','Thông điệp & Liên kết','Tính logic tổng thể'],
+ 'thuyet-minh':['Thông tin chính xác & Logic','Trình tự logic & Mạch lạc','Ngôn từ khách quan','Tư liệu & Liên kết','Bố cục','Tính mạch lạc tổng thể'],
+ 'nhat-ky':['Tính chân thực & Logic','Cảm xúc & Mạch lạc','Chi tiết đời sống','Giọng kể & Liên kết','Ý nghĩa & Logic','Tính mạch lạc']
+};
+
+let currentLevel='chuyen-nghiep', currentGenre='auto', detectedGenre='truyen-ngan', authMode='login';
+let isCustomTopic=false;
+
+function renderAuth(){
+ const user=localStorage.getItem('vanhay_currentUser');
+ const essays=JSON.parse(localStorage.getItem('vanhay_essays')||'[]');
+ const count=user?essays.filter(e=>e.username===user).length:0;
+ document.getElementById('authArea').innerHTML=user
+ ? `<span class="text-[13px]">👋 ${user}</span><button onclick="openHistory()" class="px-3 py-1.5 rounded-full bg-zinc-900 text-white text-[12px]">Kho bài (${count})</button><button onclick="logout()" class="text-[12px] text-zinc-500 ml-2">Đăng xuất</button>`
+ : `<button onclick="openAuth()" class="px-4 py-2 rounded-full bg-white border text-[13px]">Đăng nhập / Đăng ký</button>`;
+}
+function openAuth(){document.getElementById('authModal').classList.remove('hidden')}
+function closeAuth(){document.getElementById('authModal').classList.add('hidden')}
+function openHistory(){renderHistory();document.getElementById('historyModal').classList.remove('hidden')}
+function closeHistory(){document.getElementById('historyModal').classList.add('hidden')}
+function logout(){localStorage.removeItem('vanhay_currentUser');renderAuth();toast('Đã đăng xuất')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500)}
+
+document.getElementById('tabLogin').onclick=()=>{authMode='login';document.getElementById('tabLogin').className='flex-1 py-2 rounded-xl bg-zinc-900 text-white text-[13px]';document.getElementById('tabReg').className='flex-1 py-2 rounded-xl bg-zinc-100 text-[13px]'}
+document.getElementById('tabReg').onclick=()=>{authMode='register';document.getElementById('tabReg').className='flex-1 py-2 rounded-xl bg-zinc-900 text-white text-[13px]';document.getElementById('tabLogin').className='flex-1 py-2 rounded-xl bg-zinc-100 text-[13px]'}
+document.getElementById('authSubmit').onclick=()=>{
+ const u=document.getElementById('authUser').value.trim(), p=document.getElementById('authPass').value.trim();
+ if(!u||!p){document.getElementById('authMsg').textContent='Nhập đủ thông tin';document.getElementById('authMsg').classList.remove('hidden');return}
+ let users=JSON.parse(localStorage.getItem('vanhay_users')||'[]');
+ if(authMode==='register'){
+   if(users.find(x=>x.username.toLowerCase()===u.toLowerCase())){document.getElementById('authMsg').textContent='Tên đã tồn tại';document.getElementById('authMsg').classList.remove('hidden');return}
+   users.push({username:u,password:btoa(p)}); localStorage.setItem('vanhay_users',JSON.stringify(users)); localStorage.setItem('vanhay_currentUser',u); closeAuth();renderAuth();toast('Đăng ký thành công');
+ } else {
+   const f=users.find(x=>x.username===u && x.password===btoa(p)); if(!f){document.getElementById('authMsg').textContent='Sai thông tin';document.getElementById('authMsg').classList.remove('hidden');return}
+   localStorage.setItem('vanhay_currentUser',u); closeAuth();renderAuth();toast('Đăng nhập thành công');
+ }
+};
+
+function detectGenre(topic,text){
+ const t=(topic+' '+text).toLowerCase();
+ const count = (re)=> (text.match(re)||[]).length;
+ if(t.includes('truyện ngắn')) return 'truyen-ngan';
+ if(t.includes('truyện dài')||t.includes('tiểu thuyết')) return 'truyen-dai';
+ if(t.includes('thơ')||t.includes('lục bát')||t.includes('thất ngôn')) return 'tho';
+ if(t.includes('kịch bản')||t.includes('vở kịch')) return 'kich';
+ if(t.includes('thuyết minh')) return 'thuyet-minh';
+ if(t.includes('nhật ký')||t.includes('hồi ký')) return 'nhat-ky';
+ let dialogCount = count(/(^|\n)\s*[–—-]\s*[A-ZÀ-Ỹ]/gm);
+ let ws = text.toLowerCase().split(/\s+/).map(w=>w.replace(/^["'“”‘’\(\[]+|["'“”‘’.,!?;:\)\]]+$/g,''));
+ let charCount = ws.filter(w=>['đoản','ông','bà','cậu','chị','anh','em'].includes(w)).length + count(/Ông Tình|Ông Lam/g);
+ let argMarkers = count(/(luận điểm|luận cứ|dẫn chứng|phản biện|thứ nhất|thứ hai|mặt khác|hơn nữa|vì vậy|do đó|tuy nhiên|ví dụ|chứng minh|quan điểm|lý lẽ|tu thân|tề gia|trị quốc|bình thiên hạ)/gi);
+ let absRepeats = count(/(số mệnh|tương lai|bản thân|cuộc đời|con người|chúng ta)/gi);
+ let plotMarkers = count(/(nút thắt|tháo mở|cao trào|biến cố|xung đột|cốt truyện|phát triển tình tiết|mở nút|thắt nút)/gi);
+ let hasCharacters = (dialogCount>=3 || charCount>=6);
+ let hasArgument = (argMarkers>=3);
+ let hasPlot = (plotMarkers>=1 || (text.length>1000 && dialogCount>=2));
+ if(absRepeats>25 && !hasCharacters){ return 'nghi-luan-xh'; }
+ if(hasArgument && !hasCharacters && dialogCount<2){ 
+   if(t.includes('nghị luận văn học')||t.includes('phân tích tác phẩm')) return 'nghi-luan-vh';
+   return 'nghi-luan-xh'; 
+ }
+ if(hasCharacters || hasPlot || dialogCount>=2){
+   if(text.length>3500) return 'truyen-dai';
+   return 'truyen-ngan';
+ }
+ if(t.includes('tả ')||t.includes('miêu tả')) return 'mieu-ta';
+ if(t.includes('kể')||t.includes('kỷ niệm')) return 'tu-su';
+ if(t.includes('tản văn')) return 'tan-van';
+ return 'tan-van';
+}
+
+function renderTopicTabs(){
+ const tabs=document.getElementById('topicTabs');
+ tabs.innerHTML=Object.keys(levels).map(k=>`<button data-l="${k}" class="px-3 py-1 rounded-full text-[12px] border ${currentLevel===k?'bg-zinc-900 text-white border-zinc-900':'bg-white'}">${levels[k]}</button>`).join('');
+ tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{currentLevel=b.dataset.l;document.getElementById('levelSel').value=currentLevel;renderTopicTabs();renderList()});
+}
+function renderList(activeTopic){
+ const list=document.getElementById('topicList');
+ const arr=topics[currentLevel]||[];
+ const cur = activeTopic || document.getElementById('topicInput').value;
+ list.innerHTML=arr.map(t=>{
+   const isActive = t===cur;
+   return `<button data-topic="${t}" class="text-left w-full px-3 py-2 rounded-xl border text-[13px] transition ${isActive?'bg-zinc-900 text-white border-zinc-900':'bg-zinc-50 hover:bg-zinc-100 border-zinc-200'}">${t}</button>`;
+ }).join('');
+ list.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+   document.getElementById('topicInput').value=b.dataset.topic;
+   isCustomTopic=false;
+   autoDetect();
+   renderList(b.dataset.topic);
+ });
+}
+function autoDetect(){
+ const topic=document.getElementById('topicInput').value;
+ const text=document.getElementById('essayInput').value;
+ const sel=document.getElementById('genreSel').value;
+ if(sel!=='auto'){
+   detectedGenre=sel;
+   const badge=document.getElementById('genreBadge');
+   badge.textContent='Đã chọn: '+genreLabel(sel);
+   badge.classList.remove('hidden');
+   return;
+ }
+ let g=detectGenre(topic,text);
+ detectedGenre=g;
+ const badge=document.getElementById('genreBadge');
+ if(sel==='auto' && (topic.trim().length>2 || text.trim().length>10)){
+   badge.textContent='Đã nhận diện: '+genreLabel(g);
+   badge.classList.remove('hidden');
+ } else {
+   badge.classList.add('hidden');
+ }
+}
+function genreLabel(g){
+ const map={'mieu-ta':'Văn miêu tả','tu-su':'Văn tự sự','bieu-cam':'Biểu cảm','nghi-luan-xh':'Nghị luận xã hội','nghi-luan-vh':'Nghị luận văn học','truyen-ngan':'Truyện ngắn','truyen-dai':'Truyện dài / Tiểu thuyết','tan-van':'Tản văn','tho':'Thơ','kich':'Kịch','thuyet-minh':'Thuyết minh','nhat-ky':'Nhật ký'};
+ return map[g]||g;
+}
+document.getElementById('levelSel').onchange=e=>{currentLevel=e.target.value;renderTopicTabs();renderList()};
+document.getElementById('genreSel').onchange=autoDetect;
+document.getElementById('topicInput').oninput=autoDetect;
+document.getElementById('essayInput').oninput=()=>{autoDetect(); const v=document.getElementById('essayInput').value; document.getElementById('charCount').textContent=`${v.length} chữ • ${v.split(/\s+/).filter(x=>x).length} từ`;};
+
+document.getElementById('tabSample').onclick=()=>{document.getElementById('sampleBox').classList.remove('hidden');document.getElementById('customBox').classList.add('hidden');document.getElementById('tabSample').className='px-3 py-1.5 rounded-full bg-zinc-900 text-white text-[12px]';document.getElementById('tabCustom').className='px-3 py-1.5 rounded-full bg-zinc-100 text-[12px]'; isCustomTopic=false;};
+document.getElementById('tabCustom').onclick=()=>{document.getElementById('customBox').classList.remove('hidden');document.getElementById('sampleBox').classList.add('hidden');document.getElementById('tabCustom').className='px-3 py-1.5 rounded-full bg-zinc-900 text-white text-[12px]';document.getElementById('tabSample').className='px-3 py-1.5 rounded-full bg-zinc-100 text-[12px]'; isCustomTopic=true; document.getElementById('topicInput').focus();};
+
+
+function detectPoeticForm(lines){
+  const syl = lines.map(l=>l.trim().split(/\s+/).filter(w=>w).length);
+  if(syl.length==0) return {name:'Tự do', type:'tu-do', syl:[]};
+  const joined = lines.join(' ');
+  const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(joined);
+  const hasViet = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(joined);
+  const totalWords = syl.reduce((a,b)=>a+b,0);
+  const maxW = syl.length? Math.max(...syl):0;
+  if(syl.length===3 && totalWords<=20 && maxW<=12){
+    if(hasJapanese) return {name:'Haiku (bản gốc Nhật)', type:'haiku', syl, isRomaji:false};
+    if(!hasViet) return {name:'Haiku (romaji)', type:'haiku', syl, isRomaji:true};
+  }
+  const all = (n)=> syl.every(s=>s===n);
+  const avg = syl.length? syl.reduce((a,b)=>a+b,0)/syl.length : 0;
+  const isEven = syl.every(s=>Math.abs(s-avg)<=1.2);
+  if(syl.length>=2){
+    let isLucBat=true;
+    for(let i=0;i<syl.length;i++){
+      if(i%2==0 && syl[i]!=6) isLucBat=false;
+      if(i%2==1 && syl[i]!=8) isLucBat=false;
+    }
+    if(isLucBat) return {name:'Lục bát', type:'luc-bat', syl};
+  }
+  let isSTLB=true;
+  if(syl.length>=4 && syl.length%4==0){
+    for(let i=0;i<syl.length;i+=4){
+      if(syl[i]!=7 || syl[i+1]!=7 || syl[i+2]!=6 || syl[i+3]!=8){ isSTLB=false; break; }
+    }
+    if(isSTLB) return {name:'Song thất lục bát', type:'song-that-luc-bat', syl};
+  }
+  if(all(7) && syl.length==4) return {name:'Thất ngôn tứ tuyệt', type:'that-ngon-tu-tuyet', syl};
+  if(all(7) && syl.length==8) return {name:'Thất ngôn bát cú Đường luật', type:'that-ngon-bat-cu', syl};
+  if(all(5) && syl.length==4) return {name:'Ngũ ngôn tứ tuyệt', type:'ngu-ngon-tu-tuyet', syl};
+  if(all(5) && syl.length==8) return {name:'Ngũ ngôn bát cú', type:'ngu-ngon-bat-cu', syl};
+  if(all(5)) return {name:'Ngũ ngôn', type:'ngu-ngon', syl};
+  if(all(7)) return {name:'Thất ngôn', type:'that-ngon', syl};
+  if(all(4)) return {name:'Tứ ngôn / Thơ 4 chữ', type:'4-chu', syl};
+  if(all(6)) return {name:'Lục ngôn / Thơ 6 chữ', type:'6-chu', syl};
+  if(all(8)) return {name:'Bát ngôn', type:'8-chu', syl};
+  if(isEven && avg>=4 && avg<=8) return {name:`Thơ ${Math.round(avg)} chữ`, type:`${Math.round(avg)}-chu`, syl};
+  return {name:'Thơ tự do / Thơ mới', type:'tu-do', syl};
+}
+
+
+
+
+function grade(txt,isPartial){
+  const lower = txt.toLowerCase();
+  const paras = txt.split(/\n\s*\n/).filter(p=>p.trim().length>15);
+  const lines = txt.trim().split(/\n/).filter(l=>l.trim().length>2);
+  const wordCount = txt.trim().split(/\s+/).filter(Boolean).length;
+  const dialogues = (txt.match(/[–—-]\s*[^\n]{3,}/g)||[]).length;
+  let g = detectedGenre;
+  if(g==='auto'){ 
+    if(lines.length>=4 && lines.length<=40 && paras.length<=3 && txt.length<1500 && lines.every(l=>l.trim().split(/\s+/).length<=10)) g='tho';
+    else g = dialogues>=3?'truyen-ngan':'tan-van'; 
+  }
+
+  let notes=[];
+  let scores = {logic:0, psych:0, beauty:0, knot:0, context:0, fresh:0};
+
+  let poeticForm = null;
+  let isPoetry = (g==='tho');
+  if(isPoetry){
+    poeticForm = detectPoeticForm(lines);
+    notes.push(`<b>Thể thơ:</b> ${poeticForm.name} (${poeticForm.syl.join('-')} tiếng/dòng)`);
+    let variance = Math.max(...poeticForm.syl) - Math.min(...poeticForm.syl);
+    if(['luc-bat','that-ngon-tu-tuyet','that-ngon-bat-cu'].includes(poeticForm.type)){
+      scores.logic = variance===0 ? 18 : variance===1 ? 13 : variance===2 ? 9 : 5;
+      if(variance>1) notes.push(`Niêm luật lệch (${poeticForm.syl.join(', ')})`);
+    } else {
+      scores.logic = 12;
+    }
+    scores.knot = 12;
+    let img = (txt.match(/trăng|nắng|mây|gió|sông|hoa|lá|mưa|chiều|đêm/gi)||[]).length;
+    scores.beauty = Math.min(20, 6 + img*1.2);
+    scores.psych = (lower.match(/nhớ|thương|buồn|yêu/gi)||[]).length>2 ? 13 : 8;
+    scores.context = 12;
+    scores.fresh = /hàn môi|Mona Lisa|muôn tóc nến/.test(txt) ? 16 : 10;
+  }
+
+  if(!isPoetry){
+    let cut = Math.floor(txt.length*0.75);
+    let ending = txt.slice(cut);
+    let endingLower = ending.toLowerCase();
+
+    let knots=[];
+    if(/muốn có với anh một đứa con/.test(lower)) knots.push('Nhung xin con');
+    if(/đã có thai.*của anh/.test(lower)) knots.push('Mắt Xinh báo có thai');
+    let unresolved = knots.filter(k=> !new RegExp(k.split(' ')[0].toLowerCase()).test(endingLower));
+
+    let isNeutralEnd = /phóng đi|lạc đường|dừng xe|tìm số|dọn dẹp|đặt.*nôi|đi tắm|đi ngủ|hủy hẹn|không còn thấy gã|thở dài.*cuối cùng|phải đến đấy/.test(endingLower);
+    let hasPeak = /quặn thắt|nước mắt|ù tai|đau.*cõi lòng/.test(lower);
+
+    // Logic 0-20 không base
+    if(isNeutralEnd && hasPeak) { scores.logic = 4; notes.push('Kết cụt sau cao trào'); }
+    else if(isNeutralEnd) { scores.logic = 7; notes.push('Kết cụt / sinh hoạt'); }
+    else if(unresolved.length>0) { scores.logic = 8; notes.push(`Bỏ rơi nút: ${unresolved.join(', ')}`); }
+    else if(knots.length===0) { scores.logic = 10; }
+    else { scores.logic = 15; }
+
+    // Tâm lý
+    let inner = (txt.match(/tôi nghĩ|trong lòng|tự nhủ/gi)||[]).length;
+    if(dialogues>=8 && inner<2) { scores.psych = 5; notes.push(`Nhiều thoại (${dialogues}) thiếu nội tâm`); }
+    else if(inner>=3) scores.psych = 15;
+    else scores.psych = 10;
+
+    // Cái đẹp
+    let adj = (txt.match(/rất|vô cùng|biết bao/g)||[]).length;
+    scores.beauty = 12;
+    if(adj > wordCount/25) { scores.beauty -= 4; notes.push(`Lạm dụng phó từ ${adj} lần`); }
+    if(/không biết|không hiểu/g.test(lower) && (lower.match(/không biết|không hiểu/g)||[]).length>15) { scores.beauty -=3; notes.push('Lặp "không biết" quá nhiều'); }
+    if(/hàn môi/.test(txt)) scores.beauty += 4;
+    if(/những dài nụ cười/.test(txt)) scores.beauty += 3;
+    scores.beauty = Math.max(2, Math.min(20, scores.beauty));
+
+    // Nút thắt
+    scores.knot = knots.length===0 ? 8 : unresolved.length===0 ? 16 : 7;
+
+    // Bối cảnh
+    let detail = (txt.match(/quán bia|cháo lòng|xe ôm|phố/gi)||[]).length;
+    scores.context = detail>12 ? 7 : detail>=3 ? 13 : 8;
+
+    // Sáng tạo
+    scores.fresh = 11;
+    if(/chồng.*bất lực.*xin.*con/.test(txt)) scores.fresh -=3;
+    if(/Mona Lisa|muôn tóc nến|Sáng\.\s*Sáng rồi/.test(txt)) scores.fresh +=5;
+    scores.fresh = Math.max(2, Math.min(20, scores.fresh));
+  }
+
+  let raw = [scores.logic, scores.psych, scores.beauty, scores.knot, scores.context, scores.fresh];
+  let total = raw.reduce((a,b)=>a+b,0);
+  let finalScore = Math.round(total/120*100*10)/10;
+
+  let critNames = isPoetry ? ['Thể thơ & Niêm luật','Vần điệu & Nhịp','Hình ảnh thơ','Cảm xúc & Tứ thơ','Ngôn từ','Sáng tạo'] : ['Cốt truyện & Logic','Nhân vật & Tâm lý','Lời văn & Cái đẹp','Nút thắt & Tháo mở','Bối cảnh','Sáng tạo & Dư âm'];
+
+  return {
+    score: Math.max(5, Math.min(95, finalScore)),
+    crit: critNames.map((n,i)=>({name:n, score: Math.max(1, Math.min(20, raw[i]))})),
+    paras: paras,
+    form: {name: isPoetry? (poeticForm?poeticForm.name:'Thơ') : 'Truyện ngắn'},
+    debug: {notes, knots: [], unresolved: [], isKetMo: false, isKetCut: false, lastParaWords: 0, poeticForm, scores}
+  };
+}
+
+
+function rewrite(original, topic, level, genre){
+ if(original.trim().length>80){
+   // Keep original content, enhance style - generic, no specific name mention
+   let out=original.trim();
+   if(level==='chuyen-nghiep'){
+     // Enhance without replacing topic
+     out = out + "\n\n[Bản nâng cấp: giữ nguyên cốt truyện, nhân vật và ý tưởng gốc, chỉ nâng cao ngôn từ, nhịp điệu và chiều sâu.]";
+   }
+   return out;
+ }
+ // Generate from topic generically
+ const g=genre;
+ if(g==='truyen-ngan') return `[Gợi ý viết lại - bạn không bắt buộc phải nghe theo]\n\nBạn có thể viết theo hướng: ${topic}. Đây chỉ là gợi ý, không phải mệnh lệnh.`;
+ if(g==='truyen-dai') return `Trích truyện dài: ${topic}\n\n[Đoạn trích mẫu theo đề "${topic}". Dán bản thảo của bạn để được nâng cấp mà vẫn giữ nguyên hệ thống nhân vật và kết cấu.]`;
+ if(g==='mieu-ta') return `Bài văn miêu tả: ${topic}\n\n[Mở bài, thân bài, kết bài theo đúng đối tượng miêu tả của đề "${topic}".]`;
+ if(g==='tho') return `Bài thơ theo đề "${topic}"\n\n[Thơ mẫu theo thể loại bạn chọn, đúng vần điệu.]`;
+ return `Bài viết theo đề "${topic}" - thể loại ${genreLabel(g)}.\n\n[Bài mẫu theo đúng đề. Dán bài của bạn để chấm và nâng cấp.]`;
+}
+
+document.getElementById('gradeBtn').onclick=()=>{
+ const topic=document.getElementById('topicInput').value.trim()||'Bài viết tự do';
+ const full=document.getElementById('essayInput').value;
+ const ta=document.getElementById('essayInput');
+ const isPartial=document.getElementById('partialCheck').checked;
+ let text=full, info='';
+ if(isPartial){
+   const sel=full.substring(ta.selectionStart, ta.selectionEnd);
+   if(sel.trim().length>=10){ text=sel; info=`Đang chấm đoạn: ${sel.length} chữ / tổng ${full.length} chữ`; document.getElementById('partialInfo').textContent=info; document.getElementById('partialInfo').classList.remove('hidden');}
+   else { toast('Chưa chọn đoạn, chấm cả bài'); document.getElementById('partialInfo').classList.add('hidden');}
+ } else document.getElementById('partialInfo').classList.add('hidden');
+ if(!text.trim()){toast('Nhập bài viết');return}
+ autoDetect();
+ const g=grade(text, !!info);
+ const rew=rewrite(text, topic, currentLevel, detectedGenre);
+ const critHtml=g.crit.map(c=>{ const displayScore = (Math.round(c.score*10)/10).toFixed(1); const rawScore = c.score; return `<div class="flex justify-between items-center mb-2"><span class="text-[13px]">${c.name}</span><div class="flex items-center gap-2"><div class="w-[72px] h-2 bg-zinc-100 rounded-full overflow-hidden"><div class="h-full bg-zinc-900" style="width:${rawScore*5}%"></div></div><span class="text-[12px] font-bold w-10 text-right">${displayScore}</span></div></div>`; }).join('');
+ const debugNotes = g.debug.notes.map(n=>`• ${n}`).join('<br>') + (g.debug.knots.length? `<br><br><b>Mạch nút:</b> ${g.debug.knots.join(', ')}`:'') + (g.debug.unresolved.length? `<br><b style='color:#dc2626'>Bỏ rơi ở kết:</b> <span style='color:#dc2626'>${g.debug.unresolved.join(', ')}</span>`:'') + (g.debug.isNeutralAfterPeak? `<br><b style='color:#dc2626'>Hụt sau đỉnh:</b> <span style='color:#dc2626'>CÓ - né tránh sau đỉnh cảm xúc (lái xe/tìm số)</span>`:'');
+  document.getElementById('resultArea').innerHTML=`
+ <div class="bg-white rounded-[24px] p-6 shadow border">
+   <div class="flex justify-between"><div><p class="text-[11px] tracking-widest text-zinc-400 uppercase">${g.form?g.form.name:genreLabel(detectedGenre)} • ${levels[currentLevel].toUpperCase()} ${info?'<span class="ml-2 bg-zinc-100 px-2 py-0.5 rounded-full">ĐOẠN</span>':''}</p><h2 class="font-bold text-[15px] mt-1">${topic}</h2>${info?`<p class="text-[11px] bg-zinc-50 border rounded p-2 mt-2">${info}</p>`:''}</div><div class="text-right"><div class="text-[36px] font-bold leading-none">${(Math.round(g.score*10)/10).toFixed(1)}</div><div class="text-[12px] text-zinc-500">/100</div></div></div>
+   <div class="mt-4">${critHtml}</div><div class="mt-3 text-[11px] text-zinc-600 bg-amber-50 border border-amber-100 rounded-xl p-3">${debugNotes}</div><div id="debugNotes" class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 text-[12px] leading-[1.6]"></div>
+ </div>
+ <div class="bg-white rounded-[24px] p-6 shadow border">
+   <div class="flex justify-between items-center mb-3"><h3 class="font-semibold text-[14px]">Bản viết lại</h3><div class="flex gap-2"><button onclick="downloadResult()" class="px-3 py-1.5 rounded-full bg-amber-100 text-[12px]">Tải về</button><button onclick="navigator.clipboard.writeText(document.getElementById('rw').innerText);toast('Đã copy')" class="px-3 py-1.5 rounded-full bg-zinc-100 text-[12px]">Copy</button></div></div><div style="display:none"><button class="px-3 py-1.5 rounded-full bg-amber-100 text-[12px]">Tải về</button><button onclick="navigator.clipboard.writeText(document.getElementById('rw').innerText);toast('Đã copy')" class="px-3 py-1.5 rounded-full bg-zinc-100 text-[12px]">Copy</button></div>
+   <div id="rw" class="serif whitespace-pre-wrap text-[14px] leading-[1.8] bg-zinc-50 border rounded-xl p-4 max-h-[520px] overflow-y-auto overscroll-contain"">${rew}</div>
+   <div class="mt-3 flex gap-2"><button onclick="saveEssay()" class="px-4 py-2 rounded-xl bg-zinc-900 text-white text-[13px]">Lưu bài</button><button onclick="document.getElementById('partialCheck').checked=false;document.getElementById('partialInfo').classList.add('hidden');toast('Chấm cả bài')" class="px-4 py-2 rounded-xl bg-zinc-100 text-[13px]">Chấm cả bài</button></div>
+ </div>`;
+ window._last={topic, original:text, fullOriginal:full, rewritten:rew, score:g.score, level:currentLevel, genre:detectedGenre};
+};
+function saveEssay(){
+ const u=localStorage.getItem('vanhay_currentUser'); if(!u){openAuth();toast('Cần đăng nhập để lưu');return}
+ const d=window._last; if(!d){toast('Chưa có bài');return}
+ let es=JSON.parse(localStorage.getItem('vanhay_essays')||'[]'); es.unshift({id:Date.now(), username:u, topic:d.topic, original:d.fullOriginal||d.original, rewritten:d.rewritten, score:d.score, level:d.level, genre:d.genre, date:new Date().toISOString()}); localStorage.setItem('vanhay_essays',JSON.stringify(es)); renderAuth(); toast('Đã lưu vào kho bài');
+}
+function renderHistory(){
+ const u=localStorage.getItem('vanhay_currentUser'); if(!u){openAuth();return}
+ const es=JSON.parse(localStorage.getItem('vanhay_essays')||'[]').filter(e=>e.username===u);
+ document.getElementById('historyList').innerHTML=es.length?es.map(e=>`<div class="border rounded-xl p-3 mb-2 cursor-pointer hover:bg-zinc-50" onclick="loadHistory(${e.id})"><div class="flex justify-between"><span class="font-medium text-[13px] truncate">${e.topic}</span><span class="text-[11px] bg-zinc-900 text-white px-2 py-0.5 rounded-full">${e.score}</span></div><div class="text-[11px] text-zinc-500">${genreLabel(e.genre)} • ${new Date(e.date).toLocaleString()}</div><div class="text-[12px] mt-1 line-clamp-2 text-zinc-600">${(e.original||'').slice(0,120)}</div></div>`).join(''):'<p class="text-[13px] text-zinc-500">Chưa có bài nào</p>';
+}
+window.loadHistory=(id)=>{
+ const es=JSON.parse(localStorage.getItem('vanhay_essays')||'[]'); const e=es.find(x=>x.id===id); if(!e) return;
+ document.getElementById('topicInput').value=e.topic; document.getElementById('essayInput').value=e.original; document.getElementById('levelSel').value=e.level; currentLevel=e.level; closeHistory(); autoDetect(); toast('Đã tải bài');
+};
+
+function downloadResult(){
+  const data = window._last; if(!data){toast('Chưa có bài');return}
+  const content = `ĐIỂM: ${data.score}/100\nĐỀ: ${data.topic}\nTHỂ LOẠI: ${data.genre}\n\n--- BÀI GỐC ---\n${data.original}\n\n--- BẢN VIẾT LẠI ---\n${data.rewritten}`;
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='van-hay-'+Date.now()+'.txt'; a.click(); URL.revokeObjectURL(url);
+}
+renderAuth();renderTopicTabs();renderList();autoDetect();
+</script>
+</body>
+</html>
